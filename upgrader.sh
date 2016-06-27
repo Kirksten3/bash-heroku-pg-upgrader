@@ -48,46 +48,56 @@ function database_upgrader_menu {
     fi
     if [ "$state" == "addon_created" ]
         then
-                printf "(3) Promote Database and Set Schedule\n"
+                printf "(3) Promote and Copy ${BLUE}$new_db${NC}\n"
+    fi
+    if [ "$state" == "addon_promoted" ]
+        then
+            printf "Set ${BLUE}$new_db${NC} Schedule and Backup\n"
+    fi
+    if [ "$state" == "backed_up" ]
+        then
+            printf "%sUpgrade Completed%s" ${RED} ${NC}
     fi
     printf "(10) Clean Schedules\n"
     printf "(x) Exit to Main Menu\n"
     printf "Choice: "
     read choice
-    
-    case "$choice" in
-        "1")
-            printf "\n${GREEN}pg:info\n-------${NC}\n"
-            get_pg_info
-            echo "${pg_info}"
-            printf "\n${GREEN}pg:backup schedules\n-------------------${NC}\n"
-            get_pg_backups_schedules
-            echo "${schedules}"
-            printf "\n${GREEN}dynos\n-----${NC}\n"
-            get_dynos
-            echo "${dynos}"
-            printf "\n"
-            # set as this checks whether these commands have been run for this name
-            database_upgrader_menu
-            ;;
-        "2")
-            create_addon
-            database_upgrader_menu
-            ;;
-        "3")
-            ;;
-        "4")
-            ;;
-        "10")
-            ;;
-        [xX])
-            menu
-            ;;
-        [dD])
-            test_delete_mode
-            database_upgrader_menu
-            ;;
-    esac
+
+        case "$choice" in
+            "1")
+                printf "\n${GREEN}pg:info\n-------${NC}\n"
+                get_pg_info
+                printf "%s" "${pg_info}"
+                printf "\n\n${GREEN}pg:backup schedules\n-------------------${NC}\n"
+                get_pg_backups_schedules
+                printf "%s" "${schedules}"
+                printf "\n\n${GREEN}dynos\n-----${NC}\n"
+                get_dynos
+                printf "%s\n\n" "${dynos}"
+                
+                # set as this checks whether these commands have been run for this name
+                database_upgrader_menu
+                ;;
+            "2")
+                create_addon
+                database_upgrader_menu
+                ;;
+            "3")
+                promote_copy
+                database_upgrader_menu
+                ;;
+            "4")
+                ;;
+            "10")
+                ;;
+            [xX])
+                menu
+                ;;
+            [dD])
+                test_delete_mode
+                database_upgrader_menu
+                ;;
+        esac
 }
 
 

@@ -62,8 +62,33 @@ function create_addon {
             ;;
     esac
     printf "$add_on\n"
-    pg_wait=`heroku pg:wait -a $name`
+
+    db_regex="HEROKU_POSTGRESQL_[A-Z]*_URL"
+    # [[ ]] is the test operator and ${BASH_REMATCH[1]} array contains the result of the match
+    [[ "$add_on" =~ (HEROKU_POSTGRESQL_[A-Z]*_URL) ]] && new_db="${BASH_REMATCH[1]}"
+    #pg_wait=`heroku pg:wait -a $name`
     state="addon_created"
+}
+
+function promote_copy {
+    printf "pg:wait...\n"
+    pg_wait=`heroku pg:wait -a $name`
+    printf "maintenance on...\n"
+    main_on=`heroku maintenance:on -a $name`
+    printf "copying DATABASE_URL to $new_db...\n"
+    copy_db=`heroku pg:copy DATABASE_URL $new_db --confirm $name`
+    printf "promoting $new_db\n"
+    promote_db=`heroku pg:promote $new_db -a $name`
+    state="addon_promoted"
+}
+
+function schedule_and_backup {
+    printf "maintenance off...\n"
+    main_off=`heroku maintenance:off -a $name`
+    printf "scheduling backups...\n"
+    schedule=`heroku pg:backups schedule --at '02:00 America/Los_Angeles' DATABASE_URL --app $name`
+    backup=`heroku pg:backups capture -a $name`
+    state="backed_up"
 }
 
 function test_delete_mode {
@@ -83,7 +108,7 @@ function test_delete_mode {
     case "$confirm" in
         [cC][oO][nN][fF][iI][rR][mM])
                 printf "${RED}$db_delete${NC} will be deleted.\n"
-                del=`heroku addons:destroy $db_delete -a $name --confirm mj-hub`
+                del=`heroku addons:destroy $db_delete -a $name --confirm $name`
                 printf "$del"
                 printf "\nDeletion Successful.\n"
                 return 0;
