@@ -10,7 +10,7 @@ source helpers.sh
 function menu {
     printf "Heroku PG Upgrader Main Menu\n"
     printf "(1) Set / Change Heroku appname \"$cname\"\n"
-    if [ "$state" == "joined" ]
+    if [ "$state" == "joined" -o "$state" != "" ]
         then
             printf "(2) DB Upgrade Menu\n"
     fi
@@ -52,7 +52,7 @@ function database_upgrader_menu {
     fi
     if [ "$state" == "addon_promoted" ]
         then
-            printf "Set ${BLUE}$new_db${NC} Schedule and Backup\n"
+                printf "(4) Set ${BLUE}$new_db${NC} Schedule and Backup\n"
     fi
     if [ "$state" == "backed_up" ]
         then
@@ -79,14 +79,19 @@ function database_upgrader_menu {
                 database_upgrader_menu
                 ;;
             "2")
+                printf "\n"
                 create_addon
                 database_upgrader_menu
                 ;;
             "3")
+                printf "\n"
                 promote_copy
                 database_upgrader_menu
                 ;;
             "4")
+                printf "\n"
+                schedule_and_backup
+                database_upgrader_menu
                 ;;
             "10")
                 ;;

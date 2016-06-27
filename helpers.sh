@@ -47,7 +47,7 @@ function get_dynos {
 }
 
 function create_addon {
-    printf "Create a (B)asic, (F)ree, or (S)tandard PG DB?\n"
+        printf "Create a %s(B)asic%s, %s(F)ree%s, or %s(S)tandard%s Postgresql Database?\n" "${GREEN}" "${NC}" "${BLUE}" "${NC}" "${RED}" "${NC}"
     printf "Choice: "
     read db_type
     case "$db_type" in
@@ -61,7 +61,7 @@ function create_addon {
             add_on=`heroku addons:create heroku-postgresql:standard -a $name`
             ;;
     esac
-    printf "$add_on\n"
+    printf "$add_on\n\n"
 
     db_regex="HEROKU_POSTGRESQL_[A-Z]*_URL"
     # [[ ]] is the test operator and ${BASH_REMATCH[1]} array contains the result of the match
