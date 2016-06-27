@@ -47,7 +47,7 @@ function get_dynos {
 }
 
 function create_addon {
-        printf "Create a %s(B)asic%s, %s(F)ree%s, or %s(S)tandard%s Postgresql Database?\n" "${GREEN}" "${NC}" "${BLUE}" "${NC}" "${RED}" "${NC}"
+    echo "Create a ${GREEN}(B)asic${NC}, ${BLUE}(F)ree${NC}, or ${RED}(S)tandard${NC} Postgresql Database?"
     printf "Choice: "
     read db_type
     case "$db_type" in
@@ -107,7 +107,7 @@ function test_delete_mode {
     read confirm
     case "$confirm" in
         [cC][oO][nN][fF][iI][rR][mM])
-                printf "${RED}$db_delete${NC} will be deleted.\n"
+                echo "${RED}$db_delete${NC} will be deleted."
                 del=`heroku addons:destroy $db_delete -a $name --confirm $name`
                 printf "$del"
                 printf "\nDeletion Successful.\n"
