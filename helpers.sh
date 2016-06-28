@@ -47,7 +47,7 @@ function get_dynos {
 }
 
 function create_addon {
-    echo "Create a ${GREEN}(B)asic${NC}, ${BLUE}(F)ree${NC}, or ${RED}(S)tandard${NC} Postgresql Database?"
+    printf "Create a ${GREEN}(B)asic${NC}, ${BLUE}(F)ree${NC}, or ${RED}(S)tandard${NC} Postgresql Database?\n"
     printf "Choice: "
     read db_type
     case "$db_type" in
@@ -61,7 +61,7 @@ function create_addon {
             add_on=`heroku addons:create heroku-postgresql:standard -a $name`
             ;;
     esac
-    printf "$add_on\n\n"
+    printf "\n$add_on\n\n"
 
     db_regex="HEROKU_POSTGRESQL_[A-Z]*_URL"
     # [[ ]] is the test operator and ${BASH_REMATCH[1]} array contains the result of the match
@@ -80,7 +80,7 @@ function promote_copy {
     printf "promoting $new_db\n"
     promote_db=`heroku pg:promote $new_db -a $name`
     state="addon_promoted"
-}
+    printf "\n"
 
 function schedule_and_backup {
     printf "maintenance off...\n"
@@ -93,7 +93,7 @@ function schedule_and_backup {
 
 function test_delete_mode {
     printf "\n${RED}ENTERED TEST DELETE MODE\n------------------------${NC}\n"
-    echo "${pg_info}"
+    printf "${pg_info}"
     printf "\nWhich database should be deleted? Enter exact name or (x) to cancel.\n"
     printf "Choice: "
     read db_delete
@@ -107,10 +107,10 @@ function test_delete_mode {
     read confirm
     case "$confirm" in
         [cC][oO][nN][fF][iI][rR][mM])
-                echo "${RED}$db_delete${NC} will be deleted."
+                printf "${RED}$db_delete${NC} will be deleted."
                 del=`heroku addons:destroy $db_delete -a $name --confirm $name`
                 printf "$del"
-                printf "\nDeletion Successful.\n"
+                printf "\nDeletion Successful.\n\n"
                 return 0;
             ;;
         [xX])
