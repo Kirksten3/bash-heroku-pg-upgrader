@@ -81,7 +81,6 @@ function promote_copy {
     promote_db=`heroku pg:promote $new_db -a $name`
     state="addon_promoted"
     printf "\n"
-}
 
 function schedule_and_backup {
     printf "maintenance off...\n"
@@ -90,4 +89,32 @@ function schedule_and_backup {
     schedule=`heroku pg:backups schedule --at '02:00 America/Los_Angeles' DATABASE_URL --app $name`
     backup=`heroku pg:backups capture -a $name`
     state="backed_up"
+}
+
+function test_delete_mode {
+    printf "\n${RED}ENTERED TEST DELETE MODE\n------------------------${NC}\n"
+    printf "${pg_info}"
+    printf "\nWhich database should be deleted? Enter exact name or (x) to cancel.\n"
+    printf "Choice: "
+    read db_delete
+    
+    if [ "$db_delete" == "x" -o "$db_delete" == "X" ]
+        then
+            return 1;
+    fi
+
+    printf "\nType CONFIRM to confirm the deletion or (x) to exit: "
+    read confirm
+    case "$confirm" in
+        [cC][oO][nN][fF][iI][rR][mM])
+                printf "${RED}$db_delete${NC} will be deleted."
+                del=`heroku addons:destroy $db_delete -a $name --confirm $name`
+                printf "$del"
+                printf "\nDeletion Successful.\n\n"
+                return 0;
+            ;;
+        [xX])
+            return 1;
+            ;;
+    esac
 }

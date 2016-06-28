@@ -98,6 +98,10 @@ function database_upgrader_menu {
             [xX])
                 menu
                 ;;
+            [dD])
+                test_delete_mode
+                database_upgrader_menu
+                ;;
         esac
 }
 
