@@ -73,21 +73,21 @@ function create_addon {
 function promote_copy {
     printf "pg:wait...\n"
     pg_wait=`heroku pg:wait -a $name`
-    printf "maintenance on...\n"
     main_on=`heroku maintenance:on -a $name`
-    printf "copying DATABASE_URL to $new_db...\n"
     copy_db=`heroku pg:copy DATABASE_URL $new_db --confirm $name`
-    printf "promoting $new_db\n"
+    printf "$copy_db\n"
     promote_db=`heroku pg:promote $new_db -a $name`
+    printf "$promote_db\n"
     state="addon_promoted"
     printf "\n"
 }
 
 function schedule_and_backup {
-    printf "maintenance off...\n"
+    # this prints itself
     main_off=`heroku maintenance:off -a $name`
-    printf "scheduling backups...\n"
     schedule=`heroku pg:backups schedule --at '02:00 America/Los_Angeles' DATABASE_URL --app $name`
+    printf "$schedule\n"
     backup=`heroku pg:backups capture -a $name`
+    printf "$backup\n"
     state="backed_up"
 }
