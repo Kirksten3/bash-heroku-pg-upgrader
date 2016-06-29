@@ -56,7 +56,7 @@ function database_upgrader_menu {
     fi
     if [ "$state" == "backed_up" ]
         then
-            printf "${RED}Upgrade Completed${NC}\n"
+            printf "${RED}--Upgrade Completed--${NC}\n"
     fi
     printf "(10) Clean Schedules\n"
     printf "(x) Exit to Main Menu\n"

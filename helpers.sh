@@ -47,7 +47,7 @@ function get_dynos {
 }
 
 function create_addon {
-    printf "Create a ${GREEN}(B)asic${NC}, ${BLUE}(F)ree${NC}, or ${RED}(S)tandard${NC} Postgresql Database?\n"
+    printf "Create a ${GREEN}(B)asic - \$9/mo${NC}, ${BLUE}(F)ree${NC}, or ${RED}(S)tandard - \$50/mo${NC} Postgresql Database?\n"
     printf "Choice: "
     read db_type
     case "$db_type" in
@@ -88,6 +88,6 @@ function schedule_and_backup {
     schedule=`heroku pg:backups schedule --at '02:00 America/Los_Angeles' DATABASE_URL --app $name`
     printf "$schedule\n"
     backup=`heroku pg:backups capture -a $name`
-    printf "$backup\n"
+    printf "$backup\n\n"
     state="backed_up"
 }
